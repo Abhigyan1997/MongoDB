@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
 //const Product = require('./models/product');
-// const User = require('./models/user');
+const User = require('./models/user');
 // const Cart = require('./models/cart');
 // const CartItem = require('./models/cart-item');
 
@@ -22,12 +22,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  // User.findById(1)
-  //   .then(user => {
-  //     req.user = user;
-      next();
-  //   })
-  //   .catch(err => console.log(err));
+  User.findById('6447b2c03bc5060ea12dd462')
+    .then(user => {
+      req.user = user;
+     next();
+    })
+    .catch(err => console.log(err));
 });
 
 app.use('/admin', adminRoutes);
