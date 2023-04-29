@@ -43,16 +43,20 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  req.user
-    .getCart()
-    .then(products => {
-      res.render('shop/cart', {
-        path: '/cart',
-        pageTitle: 'Your Cart',
-        products: products
-      });
-    })
-    .catch(err => console.log(err));
+  req.user.cart.items.forEach(item => {
+    Product
+    .findById(item.productId)
+    .then(product => {
+      item.productId = product;
+    });
+  });
+  
+  // Render the view after all products are fetched
+  res.render('shop/cart', {
+    path: '/cart',
+    pageTitle: 'Your Cart',
+    products: req.user.cart.items
+  });
 };
 
 exports.postCart = (req, res, next) => {
