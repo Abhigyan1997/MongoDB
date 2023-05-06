@@ -1,5 +1,7 @@
 const Product = require('../models/product');
 
+const Order=require('../models/order');
+
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then(products => {
@@ -50,7 +52,7 @@ exports.getCart = (req, res, next) => {
       item.productId = product;
     });
   });
-  
+   
   // Render the view after all products are fetched
   res.render('shop/cart', {
     path: '/cart',
@@ -82,10 +84,22 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
-  req.user
-    .addOrder()
-    .then(result => {
+  req.user.cart.items.forEach(item => {
+    Product
+    .findById(item.productId)
+    .then(product => {
+      item.productId = product;
+      const order=new Order({
+        user:{
+          name:req.user.name,
+          userId:req.user
+         },
+        products:products
+       })
+       order.save();
+    });
+  })
+ .then(result => {
       res.redirect('/orders');
     })
     .catch(err => console.log(err));
